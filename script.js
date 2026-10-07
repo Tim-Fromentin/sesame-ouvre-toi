@@ -192,7 +192,22 @@ categoriesNav.addEventListener("click", (e) => {
 });
 
 // Étape 7 · Le prénom du client
-
+const customerError = document.querySelector("#customer-error");
+const customerName = document.querySelector("#customer-name");
+const customerForm = document.querySelector("#customer-form");
+const ticketTitle = document.querySelector("#ticket-title");
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (!customerName.value) {
+    customerError.textContent = "Veuillez rentrer un nom.";
+    setTimeout(() => {
+      customerError.textContent = "";
+    }, 1000);
+    return;
+  }
+  ticketTitle.textContent = `Ticket de ${customerName.value}`;
+};
+customerForm.addEventListener("submit", handleSubmit);
 // Étape 8 · Le code promo
 
 // Bonus
