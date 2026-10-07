@@ -93,6 +93,7 @@ const renderMenu = (category = "all") => {
 // Étape 3 · L'objet order
 const order = {
   lines: [],
+  discount: 0,
   add: function (product) {
     if (!product) return;
     if (!product.available) {
@@ -138,6 +139,7 @@ const order = {
 const ticketLines = document.querySelector("#ticket-lines");
 const ticketEmpty = document.querySelector("#ticket-empty");
 const ticketTotal = document.querySelector("#ticket-total");
+const ticketDiscount = document.querySelector("#ticket-discount");
 
 const renderTicket = () => {
   ticketLines.textContent = "";
@@ -169,7 +171,8 @@ const renderTicket = () => {
     lineRemove.type = "button";
     lineRemove.ariaLabel = "Retirer un Cappuccino";
     lineRemove.addEventListener("click", () => order.remove(line.id));
-    ticketTotal.textContent = `${formatPrice(order.getSubtotal())}`;
+    ticketTotal.textContent = `${formatPrice(order.getSubtotal() - order.getSubtotal() * order.discount)}`;
+    ticketDiscount.textContent = `${order.getSubtotal() * (order.discount / 100)} €`;
 
     ticketLines.appendChild(ticketLine);
     ticketLine.append(lineName, lineQty, linePrice, lineRemove);
@@ -209,5 +212,23 @@ const handleSubmit = (e) => {
 };
 customerForm.addEventListener("submit", handleSubmit);
 // Étape 8 · Le code promo
-
+const promoCode = "BARISTA";
+const promoForm = document.querySelector("#promo-form");
+const promoCodeValue = document.querySelector("#promo-code");
+const promoMessage = document.querySelector("#promo-message");
+const applyPromoCode = (e) => {
+  e.preventDefault();
+  promoMessage.textContent = "";
+  renderTicket();
+  if (
+    !promoCodeValue ||
+    promoCodeValue.value.toUpperCase() !== promoCode.toUpperCase()
+  ) {
+    promoMessage.textContent = "Code inconnu";
+    return;
+  }
+  order.discount = 0.1;
+  renderTicket();
+};
+promoForm.addEventListener("submit", applyPromoCode);
 // Bonus
