@@ -5,34 +5,51 @@ function formatPrice(cents) {
   return (cents / 100).toFixed(2).replace(".", ",") + " €";
 }
 
+// Error message
+const showErrorMsg = (errorMsg, target) => {
+  const p = document.createElement("p");
+  p.classList.add("error");
+  p.textContent = errorMsg;
+  target.appendChild(p);
+};
+
 // Étape 1 · Afficher la carte
-console.log("menu", menu);
 const menuList = document.querySelector("#menu");
 const renderMenu = () => {
+  if (!Array.isArray(menu)) {
+    console.error("An error has occurred");
+
+    return;
+    
+  }
+  menu.length < 1 ? showErrorMsg("Aucun plat n'a été trouvé.", menuList) : "";
   for (let index = 0; index < menu.length; index++) {
-    //     <article class="product">
-    //   <span class="product-category">Café</span>
-    //   <h3 class="product-name">Espresso</h3>
-    //   <p class="product-price">2,20 €</p>
-    //   <button type="button" class="product-add">Ajouter</button>
-    // </article>
+    // ============================= Article
     const articleProduct = document.createElement("article");
     articleProduct.classList.add("product");
     articleProduct.id = `product-${menu[index].id || index}`;
+
+    // ============================= Product category
     const spanProductCategory = document.createElement("span");
     spanProductCategory.classList.add("product-category");
     spanProductCategory.textContent =
       menu[index].category || "Catégorie introuvable";
+
+    // ============================= Product name
     const productName = document.createElement("h3");
     productName.classList.add("product-name");
     productName.textContent = menu[index].name || "Produit introuvable";
+
+    // ============================= Product price
     const productPrice = document.createElement("p");
     productPrice.classList.add("product-price");
-    productPrice.textContent = menu[index].price;
+    productPrice.textContent = formatPrice(menu[index].price || 0);
+
+    // ============================= Product button
     const productAddBtn = document.createElement("button");
     productAddBtn.classList.add("product-add");
     productAddBtn.textContent = "Ajouter";
-    productAddBtn.type = "button"
+    productAddBtn.type = "button";
 
     menuList.appendChild(articleProduct);
     articleProduct.append(
