@@ -110,6 +110,16 @@ const order = {
     );
     return sum;
   },
+  remove: function (id) {
+    if (!id) return;
+    let targetProduct = this.lines.find((item) => item.id === id);
+    let index = this.lines.findIndex((item) => item.id === id);
+    targetProduct.quantity -= 1;
+    if (index > -1 && targetProduct.quantity < 1) {
+      this.lines.splice(index, 1);
+    }
+    renderTicket();
+  },
 };
 
 renderMenu();
@@ -122,6 +132,7 @@ const ticketTotal = document.querySelector("#ticket-total");
 
 const renderTicket = () => {
   ticketLines.textContent = "";
+  ticketTotal.textContent = "0,00 €";
   order.lines.length > 0
     ? ticketEmpty.classList.add("is-hidden")
     : ticketEmpty.classList.remove("is-hidden");
@@ -148,6 +159,7 @@ const renderTicket = () => {
     lineRemove.textContent = "-";
     lineRemove.type = "button";
     lineRemove.ariaLabel = "Retirer un Cappuccino";
+    lineRemove.addEventListener("click", () => order.remove(line.id));
     ticketTotal.textContent = `${formatPrice(order.getSubtotal())}`;
 
     ticketLines.appendChild(ticketLine);
