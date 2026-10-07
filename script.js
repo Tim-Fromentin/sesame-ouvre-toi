@@ -1,13 +1,15 @@
 import { menu } from "./menu.js";
 const ticketId = document.querySelector("#ticket-id");
-const formules = [{
-  name: "formule déjeuner",
-  discount: 100, 
-  formuleElement: {
-    "drink": 1,
-    "pastry": 1
-  }
-}]
+const formules = [
+  {
+    name: "formule déjeuner",
+    discount: 100,
+    formuleElement: {
+      drink: 1,
+      pastry: 1,
+    },
+  },
+];
 // Fournie : transforme 220 en "2,20 €". Tu n'as pas à la modifier.
 function formatPrice(cents) {
   return (cents / 100).toFixed(2).replace(".", ",") + " €";
@@ -97,26 +99,45 @@ const renderMenu = (category = "all") => {
     );
   }
 };
-
+const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
+const linesSaved = localStorage.getItem("sesame-order");
+const discountSaved = localStorage.getItem("sesame-discount");
 // Étape 3 · L'objet order
 const order = {
-  lines: [],
-  discount: 0,
-  ticketId: 1,
-  calcDiscount: function(){
-    const numberDrinks = this.lines.filter((item) => item.category === "tea" || item.category === "coffee").reduce((accumulator, current) => accumulator + current.quantity, 0);
-    const numberPastry = this.lines.filter((item) => item.category === "pastry").reduce((accumulator, current) => accumulator + current.quantity, 0);
-    const discount = formules.reduce((accumulator, current) => accumulator + (Math.min(numberDrinks, numberPastry) * current.discount), 0);
-    return discount; 
+  lines: JSON.parse(linesSaved) || [],
+  discount: parseFloat(discountSaved) || 0,
+  ticketId: parseFloat(ticketIdSaved) || 1,
+  save: function () {
+    localStorage.setItem("sesame-discount", JSON.stringify(this.discount));
+    localStorage.setItem("sesame-order", JSON.stringify(this.lines));
+    localStorage.setItem("sesame-ticket-id", JSON.stringify(this.ticketId));
   },
-  getTotalDiscount: function () { 
-    return this.calcDiscount() + Math.round((this.getSubtotal() - this.calcDiscount()) * this.discount); 
-  }, 
+  calcDiscount: function () {
+    const numberDrinks = this.lines
+      .filter((item) => item.category === "tea" || item.category === "coffee")
+      .reduce((accumulator, current) => accumulator + current.quantity, 0);
+    const numberPastry = this.lines
+      .filter((item) => item.category === "pastry")
+      .reduce((accumulator, current) => accumulator + current.quantity, 0);
+    const discount = formules.reduce(
+      (accumulator, current) =>
+        accumulator + Math.min(numberDrinks, numberPastry) * current.discount,
+      0,
+    );
+    return discount;
+  },
+  getTotalDiscount: function () {
+    return (
+      this.calcDiscount() +
+      Math.round((this.getSubtotal() - this.calcDiscount()) * this.discount)
+    );
+  },
   handleCashIn: function () {
     this.ticketId += 1;
     this.lines = [];
-    this.discount = 0; 
+    this.discount = 0;
     ticketId.textContent = this.ticketId;
+    this.save();
     renderTicket();
   },
   add: function (product) {
@@ -137,6 +158,7 @@ const order = {
         quantity: 1,
       });
     }
+    this.save();
     renderTicket();
   },
   getSubtotal: function () {
@@ -155,6 +177,7 @@ const order = {
     if (index > -1 && targetProduct.quantity < 1) {
       this.lines.splice(index, 1);
     }
+    this.save();
     renderTicket();
   },
 };
@@ -165,7 +188,7 @@ const ticketLines = document.querySelector("#ticket-lines");
 const ticketEmpty = document.querySelector("#ticket-empty");
 const ticketTotal = document.querySelector("#ticket-total");
 const ticketDiscount = document.querySelector("#ticket-discount");
-ticketDiscount.textContent = formatPrice(order.getTotalDiscount()); 
+ticketDiscount.textContent = formatPrice(order.getTotalDiscount());
 
 const renderTicket = () => {
   ticketLines.textContent = "";
@@ -201,13 +224,16 @@ const renderTicket = () => {
     ticketLines.appendChild(ticketLine);
     ticketLine.append(lineName, lineQty, linePrice, lineRemove);
   }
-  ticketDiscount.textContent = formatPrice(order.getTotalDiscount()); 
-  ticketTotal.textContent = formatPrice(order.getSubtotal() - order.getTotalDiscount()); 
+  ticketDiscount.textContent = formatPrice(order.getTotalDiscount());
+  ticketTotal.textContent = formatPrice(
+    order.getSubtotal() - order.getTotalDiscount(),
+  );
 };
 
 // Étape 6 · Filtrer par catégorie
 
 renderMenu();
+renderTicket();
 const categoriesNav = document.querySelector("#categories");
 const buttonsCategoriesNav = document.querySelectorAll("#categories > button");
 categoriesNav.addEventListener("click", (e) => {
@@ -218,7 +244,7 @@ categoriesNav.addEventListener("click", (e) => {
 
   e.target.classList.add("is-active");
 });
-
+ticketId.textContent = order.ticketId;
 // Étape 7 · Le prénom du client
 const customerError = document.querySelector("#customer-error");
 const customerName = document.querySelector("#customer-name");
@@ -253,10 +279,10 @@ const applyPromoCode = (e) => {
     return;
   }
   order.discount = 0.1;
+  order.save();
   renderTicket();
 };
 promoForm.addEventListener("submit", applyPromoCode);
 // Bonus
 const checkout = document.querySelector("#checkout");
 checkout.addEventListener("click", () => order.handleCashIn());
-
