@@ -52,3 +52,11 @@ export const createElements = (elements) => {
     return el;
   });
 };
+
+export const parseJson = (json) => {
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    console.error(e);
+  }
+};

@@ -1,12 +1,13 @@
 import { formules } from "../ressources/formules.js";
 import { renderTicket } from "./renderTicket.js";
-import { showToast } from "./utils.js";
+import { showToast, parseJson } from "./utils.js";
 const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
 const discountSaved = localStorage.getItem("sesame-discount");
+const checkout = document.querySelector("#checkout");
 
 export const order = {
-  lines: JSON.parse(linesSaved) || [],
+  lines: parseJson(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
   ticketId: parseFloat(ticketIdSaved) || 1,
   save: function () {
@@ -35,6 +36,10 @@ export const order = {
     );
   },
   handleCashIn: function () {
+    if (this.lines.length < 1) {
+      showToast("Merci de choisir au moins un produit")
+      return;
+    }
     this.ticketId += 1;
     this.lines = [];
     this.discount = 0;
@@ -81,3 +86,5 @@ export const order = {
     renderTicket();
   },
 };
+
+checkout.addEventListener("click", () => order.handleCashIn());

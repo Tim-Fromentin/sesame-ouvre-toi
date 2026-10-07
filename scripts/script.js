@@ -54,5 +54,4 @@ const applyPromoCode = (e) => {
 };
 promoForm.addEventListener("submit", applyPromoCode);
 
-const checkout = document.querySelector("#checkout");
-checkout.addEventListener("click", () => order.handleCashIn());
+
