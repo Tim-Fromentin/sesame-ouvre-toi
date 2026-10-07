@@ -295,7 +295,9 @@ input:focus-visible {
   background: var(--roast);
   color: var(--cream);
 }
-
+.error {
+  color: var(--error);
+}
 .form-error {
   min-height: 1.4em;
   margin: 6px 0 0;

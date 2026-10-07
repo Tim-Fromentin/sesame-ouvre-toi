@@ -1,31 +1,80 @@
+import { menu } from "./menu.js";
+
 // Fournie : transforme 220 en "2,20 €". Tu n'as pas à la modifier.
 function formatPrice(cents) {
   return (cents / 100).toFixed(2).replace(".", ",") + " €";
 }
 
+// Error message
+const showErrorMsg = (errorMsg, target) => {
+  const p = document.createElement("p");
+  p.classList.add("error");
+  p.textContent = errorMsg;
+  target.appendChild(p);
+};
 
 // Étape 1 · Afficher la carte
+const menuList = document.querySelector("#menu");
+const renderMenu = () => {
+  if (!Array.isArray(menu)) {
+    console.error("An error has occurred");
 
+    return;
+    
+  }
+  menu.length < 1 ? showErrorMsg("Aucun plat n'a été trouvé.", menuList) : "";
+  for (let index = 0; index < menu.length; index++) {
+    // ============================= Article
+    const articleProduct = document.createElement("article");
+    articleProduct.classList.add("product");
+    articleProduct.id = `product-${menu[index].id || index}`;
+
+    // ============================= Product category
+    const spanProductCategory = document.createElement("span");
+    spanProductCategory.classList.add("product-category");
+    spanProductCategory.textContent =
+      menu[index].category || "Catégorie introuvable";
+
+    // ============================= Product name
+    const productName = document.createElement("h3");
+    productName.classList.add("product-name");
+    productName.textContent = menu[index].name || "Produit introuvable";
+
+    // ============================= Product price
+    const productPrice = document.createElement("p");
+    productPrice.classList.add("product-price");
+    productPrice.textContent = formatPrice(menu[index].price || 0);
+
+    // ============================= Product button
+    const productAddBtn = document.createElement("button");
+    productAddBtn.classList.add("product-add");
+    productAddBtn.textContent = "Ajouter";
+    productAddBtn.type = "button";
+
+    menuList.appendChild(articleProduct);
+    articleProduct.append(
+      spanProductCategory,
+      productName,
+      productPrice,
+      productAddBtn,
+    );
+  }
+};
+
+renderMenu();
 
 // Étape 2 · Les produits épuisés
 
-
 // Étape 3 · L'objet order
-
 
 // Étape 4 · Afficher le ticket
 
-
 // Étape 5 · Retirer une ligne
-
 
 // Étape 6 · Filtrer par catégorie
 
-
 // Étape 7 · Le prénom du client
 
-
 // Étape 8 · Le code promo
-
 
 // Bonus
