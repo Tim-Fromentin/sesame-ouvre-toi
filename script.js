@@ -46,6 +46,7 @@ const renderMenu = () => {
 
     // ============================= Product button
     const productAddBtn = document.createElement("button");
+    // Étape 2 · Les produits épuisés
     !menu[index].available
       ? (articleProduct.classList.add("is-sold-out"),
         (productAddBtn.disabled = true))
@@ -53,6 +54,9 @@ const renderMenu = () => {
     productAddBtn.classList.add("product-add");
     productAddBtn.textContent = "Ajouter";
     productAddBtn.type = "button";
+    productAddBtn.addEventListener("click", () => {
+      order.add(menu[index]);
+    });
 
     menuList.appendChild(articleProduct);
     articleProduct.append(
@@ -64,11 +68,33 @@ const renderMenu = () => {
   }
 };
 
-renderMenu();
-
-// Étape 2 · Les produits épuisés
-
 // Étape 3 · L'objet order
+const order = {
+  lines: [],
+  add: function (product) {
+    if (!product) return;
+    let targetProduct = this.lines.find((item) => item.id === product.id);
+    if (targetProduct) {
+      targetProduct.quantity += 1;
+    } else {
+      this.lines.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+      });
+    }
+  },
+  getSubtotal: function () {
+    const sum = this.lines.reduce(
+      (accumulator, current) => accumulator + current.price * current.quantity,
+      0,
+    );
+    return sum;
+  },
+};
+
+renderMenu();
 
 // Étape 4 · Afficher le ticket
 
