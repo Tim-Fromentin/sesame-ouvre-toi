@@ -19,11 +19,36 @@ export const showToast = (message) => {
   }, 1000);
 };
 
-export const translate = (array, name) => {
-  const wordTranslate = array.find(
+export const translate = (object, name) => {
+  const wordTranslate = object.find(
     (item) => item.en.toUpperCase() === name.toUpperCase(),
   );
   if (wordTranslate) {
     return wordTranslate.fr;
   }
+};
+
+export const createElements = (elements) => {
+  return elements.map((element) => {
+    const el = document.createElement(element.tag);
+    if (element.className) {
+      if (Array.isArray(element.className)) {
+        element.className.forEach((name) => el.classList.add(name));
+      } else {
+        el.classList.add(element.className);
+      }
+    }
+    if (element.id) el.id = element.id;
+    if (element.textContent) el.textContent = element.textContent;
+    if (element.type) el.type = element.type;
+    if (element.ariaLabel) el.ariaLabel = element.ariaLabel;
+    if (element.disabled) el.disabled = true;
+    if (element.eventListener) {
+      el.addEventListener(
+        element.eventListener.type,
+        element.eventListener.callback,
+      );
+    }
+    return el;
+  });
 };

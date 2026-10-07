@@ -2,8 +2,7 @@ import { menu } from "../ressources/menu.js";
 import { formatPrice, showErrorMsg, translate } from "./utils.js";
 import { order } from "./order.js";
 import { translateCategorie } from "../ressources/translate.js";
-
-
+import { createElements } from "./utils.js";
 
 const menuList = document.querySelector("#menu");
 export const renderMenu = (category = "all") => {
@@ -22,41 +21,52 @@ export const renderMenu = (category = "all") => {
     ? showErrorMsg("Aucun plat n'a été trouvé.", menuList)
     : "";
   for (let index = 0; index < menuByCategory.length; index++) {
-    // ============================= Article
-    const articleProduct = document.createElement("article");
-    articleProduct.classList.add("product");
-    articleProduct.id = `product-${menuByCategory[index].id || index}`;
+    const product = menuByCategory[index];
+    const isSoldOut = !product.available;
 
-    // ============================= Product category
-    const spanProductCategory = document.createElement("span");
-    spanProductCategory.classList.add("product-category");
-    spanProductCategory.textContent =
-      translate(translateCategorie, menuByCategory[index].category);
+    const elements = [
+      {
+        tag: "article",
+        className: isSoldOut ? ["product", "is-sold-out"] : ["product"],
+        id: `product-${product.id || index}`,
+      },
+      {
+        tag: "span",
+        className: "product-category",
+        textContent:
+          translate(translateCategorie, product.category) ||
+          "Catégorie introuvable",
+      },
+      {
+        tag: "h3",
+        className: "product-name",
+        textContent: product.name || "Produit introuvable",
+      },
+      {
+        tag: "p",
+        className: "product-price",
+        textContent: formatPrice(product.price || 0),
+      },
+      {
+        tag: "button",
+        className: "product-add",
+        textContent: "Ajouter",
+        type: "button",
+        disabled: isSoldOut,
+        eventListener: {
+          type: "click",
+          callback: () => order.add(product),
+        },
+      },
+    ];
 
-    // ============================= Product name
-    const productName = document.createElement("h3");
-    productName.classList.add("product-name");
-    productName.textContent =
-      menuByCategory[index].name || "Produit introuvable";
-
-    // ============================= Product price
-    const productPrice = document.createElement("p");
-    productPrice.classList.add("product-price");
-    productPrice.textContent = formatPrice(menuByCategory[index].price || 0);
-
-    // ============================= Product button
-    const productAddBtn = document.createElement("button");
-    // Étape 2 · Les produits épuisés
-    !menuByCategory[index].available
-      ? (articleProduct.classList.add("is-sold-out"),
-        (productAddBtn.disabled = true))
-      : "";
-    productAddBtn.classList.add("product-add");
-    productAddBtn.textContent = "Ajouter";
-    productAddBtn.type = "button";
-    productAddBtn.addEventListener("click", () => {
-      order.add(menuByCategory[index]);
-    });
+    const [
+      articleProduct,
+      spanProductCategory,
+      productName,
+      productPrice,
+      productAddBtn,
+    ] = createElements(elements);
 
     menuList.appendChild(articleProduct);
     articleProduct.append(
