@@ -1,4 +1,5 @@
 import { menu } from "./menu.js";
+const ticketId = document.querySelector("#ticket-id");
 
 // Fournie : transforme 220 en "2,20 €". Tu n'as pas à la modifier.
 function formatPrice(cents) {
@@ -94,6 +95,13 @@ const renderMenu = (category = "all") => {
 const order = {
   lines: [],
   discount: 0,
+  ticketId: 1,
+  handleCashIn: function () {
+    this.ticketId += 1;
+    this.lines = [];
+    ticketId.textContent = this.ticketId;
+    renderTicket();
+  },
   add: function (product) {
     if (!product) return;
     if (!product.available) {
@@ -186,7 +194,6 @@ const categoriesNav = document.querySelector("#categories");
 const buttonsCategoriesNav = document.querySelectorAll("#categories > button");
 categoriesNav.addEventListener("click", (e) => {
   renderMenu(e.target.value);
-  console.log(buttonsCategoriesNav);
   buttonsCategoriesNav.forEach((button) => {
     button.classList.remove("is-active");
   });
@@ -232,3 +239,5 @@ const applyPromoCode = (e) => {
 };
 promoForm.addEventListener("submit", applyPromoCode);
 // Bonus
+const checkout = document.querySelector("#checkout");
+checkout.addEventListener("click", () => order.handleCashIn());
