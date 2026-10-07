@@ -20,7 +20,6 @@ const renderMenu = () => {
     console.error("An error has occurred");
 
     return;
-    
   }
   menu.length < 1 ? showErrorMsg("Aucun plat n'a été trouvé.", menuList) : "";
   for (let index = 0; index < menu.length; index++) {
@@ -47,6 +46,10 @@ const renderMenu = () => {
 
     // ============================= Product button
     const productAddBtn = document.createElement("button");
+    !menu[index].available
+      ? (articleProduct.classList.add("is-sold-out"),
+        (productAddBtn.disabled = true))
+      : "";
     productAddBtn.classList.add("product-add");
     productAddBtn.textContent = "Ajouter";
     productAddBtn.type = "button";
