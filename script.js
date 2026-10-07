@@ -1,6 +1,13 @@
 import { menu } from "./menu.js";
 const ticketId = document.querySelector("#ticket-id");
-
+const formules = [{
+  name: "formule déjeuner",
+  discount: 100, 
+  formuleElement: {
+    "drink": 1,
+    "pastry": 1
+  }
+}]
 // Fournie : transforme 220 en "2,20 €". Tu n'as pas à la modifier.
 function formatPrice(cents) {
   return (cents / 100).toFixed(2).replace(".", ",") + " €";
@@ -96,9 +103,19 @@ const order = {
   lines: [],
   discount: 0,
   ticketId: 1,
+  calcDiscount: function(){
+    const numberDrinks = this.lines.filter((item) => item.category === "tea" || item.category === "coffee").reduce((accumulator, current) => accumulator + current.quantity, 0);
+    const numberPastry = this.lines.filter((item) => item.category === "pastry").reduce((accumulator, current) => accumulator + current.quantity, 0);
+    const discount = formules.reduce((accumulator, current) => accumulator + (Math.min(numberDrinks, numberPastry) * current.discount), 0);
+    return discount; 
+  },
+  getTotalDiscount: function () { 
+    return this.calcDiscount() + Math.round((this.getSubtotal() - this.calcDiscount()) * this.discount); 
+  }, 
   handleCashIn: function () {
     this.ticketId += 1;
     this.lines = [];
+    this.discount = 0; 
     ticketId.textContent = this.ticketId;
     renderTicket();
   },
@@ -148,6 +165,7 @@ const ticketLines = document.querySelector("#ticket-lines");
 const ticketEmpty = document.querySelector("#ticket-empty");
 const ticketTotal = document.querySelector("#ticket-total");
 const ticketDiscount = document.querySelector("#ticket-discount");
+ticketDiscount.textContent = formatPrice(order.getTotalDiscount()); 
 
 const renderTicket = () => {
   ticketLines.textContent = "";
@@ -179,12 +197,12 @@ const renderTicket = () => {
     lineRemove.type = "button";
     lineRemove.ariaLabel = "Retirer un Cappuccino";
     lineRemove.addEventListener("click", () => order.remove(line.id));
-    ticketTotal.textContent = `${formatPrice(order.getSubtotal() - order.getSubtotal() * order.discount)}`;
-    ticketDiscount.textContent = `${order.getSubtotal() * (order.discount / 100)} €`;
 
     ticketLines.appendChild(ticketLine);
     ticketLine.append(lineName, lineQty, linePrice, lineRemove);
   }
+  ticketDiscount.textContent = formatPrice(order.getTotalDiscount()); 
+  ticketTotal.textContent = formatPrice(order.getSubtotal() - order.getTotalDiscount()); 
 };
 
 // Étape 6 · Filtrer par catégorie
@@ -241,3 +259,4 @@ promoForm.addEventListener("submit", applyPromoCode);
 // Bonus
 const checkout = document.querySelector("#checkout");
 checkout.addEventListener("click", () => order.handleCashIn());
+
