@@ -1,40 +1,10 @@
-import { menu } from "./menu.js";
+import { menu } from "../ressources/menu.js";
+import { formules } from "../ressources/formules.js";
+import { formatPrice, showErrorMsg, showToast } from "./utils.js"
+
 const ticketId = document.querySelector("#ticket-id");
-const formules = [
-  {
-    name: "formule déjeuner",
-    discount: 100,
-    formuleElement: {
-      drink: 1,
-      pastry: 1,
-    },
-  },
-];
-// Fournie : transforme 220 en "2,20 €". Tu n'as pas à la modifier.
-function formatPrice(cents) {
-  return (cents / 100).toFixed(2).replace(".", ",") + " €";
-}
 
-// Error message
-const showErrorMsg = (errorMsg, target) => {
-  const p = document.createElement("p");
-  p.classList.add("error");
-  p.textContent = errorMsg;
-  target.appendChild(p);
-};
 
-// Show toast
-const toast = document.createElement("div");
-toast.id = "toast";
-document.body.appendChild(toast);
-const showToast = (message) => {
-  if (typeof message !== "string") return;
-  toast.textContent = message;
-  toast.classList.add("toast-active");
-  setTimeout(() => {
-    toast.classList.remove("toast-active");
-  }, 1000);
-};
 
 // Étape 1 · Afficher la carte
 const menuList = document.querySelector("#menu");
