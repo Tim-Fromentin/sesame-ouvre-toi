@@ -480,6 +480,7 @@ input:focus-visible {
   padding: 15px 50px;
   border-radius: var(--radius);
   transition: opacity .2s ease-in-out, transform .2s ease-in-out;
+  z-index: 999;
 }
 
 #toast.toast-active {
