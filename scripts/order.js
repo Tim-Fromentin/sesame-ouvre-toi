@@ -10,6 +10,7 @@ export const order = {
   lines: parseJson(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
   ticketId: parseFloat(ticketIdSaved) || 1,
+  customer: "",
   save: function () {
     localStorage.setItem("sesame-discount", JSON.stringify(this.discount));
     localStorage.setItem("sesame-order", JSON.stringify(this.lines));
@@ -37,11 +38,12 @@ export const order = {
   },
   handleCashIn: function () {
     if (this.lines.length < 1) {
-      showToast("Merci de choisir au moins un produit")
+      showToast("Merci de choisir au moins un produit");
       return;
     }
     this.ticketId += 1;
     this.lines = [];
+    this.customer = "";
     this.discount = 0;
     renderTicket();
     this.save();

@@ -33,7 +33,8 @@ const handleSubmit = (e) => {
     }, 1000);
     return;
   }
-  ticketTitle.textContent = `Ticket de ${customerName.value}`;
+  order.customer = customerName.value.trim()
+  ticketTitle.textContent = `Ticket de ${order.customer}`;
 };
 customerForm.addEventListener("submit", handleSubmit);
 
