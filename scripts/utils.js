@@ -9,7 +9,6 @@ export const showErrorMsg = (errorMsg, target) => {
   target.appendChild(p);
 };
 
-
 export const showToast = (message) => {
   const toast = document.querySelector("#toast");
   if (typeof message !== "string") return;
@@ -18,4 +17,13 @@ export const showToast = (message) => {
   setTimeout(() => {
     toast.classList.remove("toast-active");
   }, 1000);
+};
+
+export const translate = (array, name) => {
+  const wordTranslate = array.find(
+    (item) => item.en.toUpperCase() === name.toUpperCase(),
+  );
+  if (wordTranslate) {
+    return wordTranslate.fr;
+  }
 };

@@ -1,12 +1,10 @@
 import { formules } from "../ressources/formules.js";
-import { renderTicket } from "./renderTicket.js"
+import { renderTicket } from "./renderTicket.js";
 import { showToast } from "./utils.js";
 const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
 const discountSaved = localStorage.getItem("sesame-discount");
-const ticketId = document.querySelector("#ticket-id");
 
-// Étape 3 · L'objet order
 export const order = {
   lines: JSON.parse(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
@@ -71,7 +69,6 @@ export const order = {
     );
     return sum;
   },
-  // Étape 5 · Retirer une ligne
   remove: function (id) {
     if (!id) return;
     let targetProduct = this.lines.find((item) => item.id === id);

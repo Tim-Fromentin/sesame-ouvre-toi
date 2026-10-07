@@ -36,7 +36,7 @@ export const renderTicket = () => {
     lineRemove.classList.add("line-remove");
     lineRemove.textContent = "-";
     lineRemove.type = "button";
-    lineRemove.ariaLabel = "Retirer un Cappuccino";
+    lineRemove.ariaLabel = `Retirer un ${line.name}`;
     lineRemove.addEventListener("click", () => order.remove(line.id));
 
     ticketLines.appendChild(ticketLine);

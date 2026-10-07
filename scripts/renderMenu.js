@@ -1,6 +1,9 @@
 import { menu } from "../ressources/menu.js";
-import { formatPrice, showErrorMsg } from "./utils.js"
+import { formatPrice, showErrorMsg, translate } from "./utils.js";
 import { order } from "./order.js";
+import { translateCategorie } from "../ressources/translate.js";
+
+
 
 const menuList = document.querySelector("#menu");
 export const renderMenu = (category = "all") => {
@@ -28,7 +31,7 @@ export const renderMenu = (category = "all") => {
     const spanProductCategory = document.createElement("span");
     spanProductCategory.classList.add("product-category");
     spanProductCategory.textContent =
-      menuByCategory[index].category || "Catégorie introuvable";
+      translate(translateCategorie, menuByCategory[index].category);
 
     // ============================= Product name
     const productName = document.createElement("h3");
