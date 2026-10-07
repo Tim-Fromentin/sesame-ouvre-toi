@@ -28,39 +28,48 @@ const showToast = (message) => {
 
 // Étape 1 · Afficher la carte
 const menuList = document.querySelector("#menu");
-const renderMenu = () => {
+const renderMenu = (category = "all") => {
+  menuList.textContent = "";
   if (!Array.isArray(menu)) {
     console.error("An error has occurred");
 
     return;
   }
-  menu.length < 1 ? showErrorMsg("Aucun plat n'a été trouvé.", menuList) : "";
-  for (let index = 0; index < menu.length; index++) {
+  let menuByCategory =
+    category === "all"
+      ? menu
+      : menu.filter((article) => article.category === category);
+
+  menuByCategory.length < 1
+    ? showErrorMsg("Aucun plat n'a été trouvé.", menuList)
+    : "";
+  for (let index = 0; index < menuByCategory.length; index++) {
     // ============================= Article
     const articleProduct = document.createElement("article");
     articleProduct.classList.add("product");
-    articleProduct.id = `product-${menu[index].id || index}`;
+    articleProduct.id = `product-${menuByCategory[index].id || index}`;
 
     // ============================= Product category
     const spanProductCategory = document.createElement("span");
     spanProductCategory.classList.add("product-category");
     spanProductCategory.textContent =
-      menu[index].category || "Catégorie introuvable";
+      menuByCategory[index].category || "Catégorie introuvable";
 
     // ============================= Product name
     const productName = document.createElement("h3");
     productName.classList.add("product-name");
-    productName.textContent = menu[index].name || "Produit introuvable";
+    productName.textContent =
+      menuByCategory[index].name || "Produit introuvable";
 
     // ============================= Product price
     const productPrice = document.createElement("p");
     productPrice.classList.add("product-price");
-    productPrice.textContent = formatPrice(menu[index].price || 0);
+    productPrice.textContent = formatPrice(menuByCategory[index].price || 0);
 
     // ============================= Product button
     const productAddBtn = document.createElement("button");
     // Étape 2 · Les produits épuisés
-    !menu[index].available
+    !menuByCategory[index].available
       ? (articleProduct.classList.add("is-sold-out"),
         (productAddBtn.disabled = true))
       : "";
@@ -68,7 +77,7 @@ const renderMenu = () => {
     productAddBtn.textContent = "Ajouter";
     productAddBtn.type = "button";
     productAddBtn.addEventListener("click", () => {
-      order.add(menu[index]);
+      order.add(menuByCategory[index]);
     });
 
     menuList.appendChild(articleProduct);
@@ -98,6 +107,7 @@ const order = {
         id: product.id,
         name: product.name,
         price: product.price,
+        category: product.category,
         quantity: 1,
       });
     }
@@ -110,6 +120,7 @@ const order = {
     );
     return sum;
   },
+  // Étape 5 · Retirer une ligne
   remove: function (id) {
     if (!id) return;
     let targetProduct = this.lines.find((item) => item.id === id);
@@ -121,8 +132,6 @@ const order = {
     renderTicket();
   },
 };
-
-renderMenu();
 
 // Étape 4 · Afficher le ticket
 
@@ -167,9 +176,20 @@ const renderTicket = () => {
   }
 };
 
-// Étape 5 · Retirer une ligne
-
 // Étape 6 · Filtrer par catégorie
+
+renderMenu();
+const categoriesNav = document.querySelector("#categories");
+const buttonsCategoriesNav = document.querySelectorAll("#categories > button");
+categoriesNav.addEventListener("click", (e) => {
+  renderMenu(e.target.value);
+  console.log(buttonsCategoriesNav);
+  buttonsCategoriesNav.forEach((button) => {
+    button.classList.remove("is-active");
+  });
+
+  e.target.classList.add("is-active");
+});
 
 // Étape 7 · Le prénom du client
 
