@@ -13,6 +13,19 @@ const showErrorMsg = (errorMsg, target) => {
   target.appendChild(p);
 };
 
+// Show toast
+const toast = document.createElement("div");
+toast.id = "toast";
+document.body.appendChild(toast);
+const showToast = (message) => {
+  if (typeof message !== "string") return;
+  toast.textContent = message;
+  toast.classList.add("toast-active");
+  setTimeout(() => {
+    toast.classList.remove("toast-active");
+  }, 1000);
+};
+
 // Étape 1 · Afficher la carte
 const menuList = document.querySelector("#menu");
 const renderMenu = () => {
@@ -73,6 +86,10 @@ const order = {
   lines: [],
   add: function (product) {
     if (!product) return;
+    if (!product.available) {
+      showToast("Produit épuisé");
+      return;
+    }
     let targetProduct = this.lines.find((item) => item.id === product.id);
     if (targetProduct) {
       targetProduct.quantity += 1;
@@ -84,6 +101,7 @@ const order = {
         quantity: 1,
       });
     }
+    renderTicket();
   },
   getSubtotal: function () {
     const sum = this.lines.reduce(
@@ -97,6 +115,45 @@ const order = {
 renderMenu();
 
 // Étape 4 · Afficher le ticket
+
+const ticketLines = document.querySelector("#ticket-lines");
+const ticketEmpty = document.querySelector("#ticket-empty");
+const ticketTotal = document.querySelector("#ticket-total");
+
+const renderTicket = () => {
+  ticketLines.textContent = "";
+  order.lines.length > 0
+    ? ticketEmpty.classList.add("is-hidden")
+    : ticketEmpty.classList.remove("is-hidden");
+  for (let index = 0; index < order.lines.length; index++) {
+    let line = order.lines[index];
+    const ticketLine = document.createElement("li");
+    ticketLine.classList.add("ticket-line");
+    ticketLine.id = `ticket-${line || index}`;
+
+    const lineName = document.createElement("span");
+    lineName.classList.add("line-name");
+    lineName.textContent = line.name;
+
+    const lineQty = document.createElement("span");
+    lineQty.classList.add("line-qty");
+    lineQty.textContent = `× ${line.quantity}`;
+
+    const linePrice = document.createElement("span");
+    linePrice.classList.add("line-price");
+    linePrice.textContent = formatPrice(line.price * line.quantity);
+
+    const lineRemove = document.createElement("button");
+    lineRemove.classList.add("line-remove");
+    lineRemove.textContent = "-";
+    lineRemove.type = "button";
+    lineRemove.ariaLabel = "Retirer un Cappuccino";
+    ticketTotal.textContent = `${formatPrice(order.getSubtotal())}`;
+
+    ticketLines.appendChild(ticketLine);
+    ticketLine.append(lineName, lineQty, linePrice, lineRemove);
+  }
+};
 
 // Étape 5 · Retirer une ligne
 
