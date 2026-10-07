@@ -54,7 +54,9 @@ const renderMenu = () => {
     productAddBtn.classList.add("product-add");
     productAddBtn.textContent = "Ajouter";
     productAddBtn.type = "button";
-    productAddBtn.addEventListener("click", () => order.add(menu[index]));
+    productAddBtn.addEventListener("click", () => {
+      order.add(menu[index]);
+    });
 
     menuList.appendChild(articleProduct);
     articleProduct.append(
@@ -78,18 +80,19 @@ const order = {
       this.lines.push({
         id: product.id,
         name: product.name,
-        price: formatPrice(product.price),
+        price: product.price,
         quantity: 1,
       });
     }
-    console.log(this.lines);
   },
-  getSubtotal: function(){
-    return;
-  }
+  getSubtotal: function () {
+    const sum = this.lines.reduce(
+      (accumulator, current) => accumulator + current.price * current.quantity,
+      0,
+    );
+    return sum;
+  },
 };
-
-
 
 renderMenu();
 
