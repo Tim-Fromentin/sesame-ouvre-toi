@@ -38,10 +38,11 @@ export const order = {
     return discount;
   },
   getTotalDiscount: function () {
-    return (
-      this.calcDiscount() +
-      Math.round((this.getSubtotal() - this.calcDiscount()) * this.discount)
+    const formulaDiscount = this.calcDiscount();
+    const promoDiscount = Math.round(
+      (this.getSubtotal() - formulaDiscount) * this.discount,
     );
+    return formulaDiscount + promoDiscount;
   },
   handleCashIn: function () {
     if (this.lines.length < 1) {
@@ -51,7 +52,7 @@ export const order = {
       customer: this.customer,
       ticketId: this.ticketId,
       lines: this.lines,
-      total: this.getSubtotal() - this.getTotalDiscount(),
+      total: this.getTotal(),
     };
     this.ticketHistory.push(ticketHistoryObject);
     this.ticketId += 1;
@@ -77,6 +78,9 @@ export const order = {
     }
     this.save();
     return true;
+  },
+  getTotal: function () {
+    return this.getSubtotal() - this.getTotalDiscount();
   },
   getSubtotal: function () {
     const sum = this.lines.reduce(
