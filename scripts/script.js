@@ -1,5 +1,6 @@
 import { renderMenu } from "./renderMenu.js";
 import { renderTicket } from "./renderTicket.js";
+import { renderTicketHistory } from "./renderTicketHistory.js";
 import { order } from "./order.js";
 
 const customerError = document.querySelector("#customer-error");
@@ -33,7 +34,7 @@ const handleSubmit = (e) => {
     }, 1000);
     return;
   }
-  order.customer = customerName.value.trim()
+  order.customer = customerName.value.trim();
   ticketTitle.textContent = `Ticket de ${order.customer}`;
 };
 customerForm.addEventListener("submit", handleSubmit);
@@ -55,4 +56,4 @@ const applyPromoCode = (e) => {
 };
 promoForm.addEventListener("submit", applyPromoCode);
 
-
+renderTicketHistory();

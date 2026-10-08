@@ -112,7 +112,9 @@ input:focus-visible {
   background: transparent;
   color: var(--roast);
   font-weight: 500;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 #categories button:hover {
@@ -141,7 +143,9 @@ input:focus-visible {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: 0 1px 0 var(--line), 0 6px 18px -12px rgba(46, 29, 20, 0.35);
+  box-shadow:
+    0 1px 0 var(--line),
+    0 6px 18px -12px rgba(46, 29, 20, 0.35);
   overflow: hidden;
 }
 
@@ -246,8 +250,10 @@ input:focus-visible {
   right: 0;
   height: 10px;
   background:
-    linear-gradient(-45deg, var(--paper) 5px, transparent 0) 0 0 / 10px 10px repeat-x,
-    linear-gradient(45deg, var(--paper) 5px, transparent 0) 0 0 / 10px 10px repeat-x;
+    linear-gradient(-45deg, var(--paper) 5px, transparent 0) 0 0 / 10px 10px
+      repeat-x,
+    linear-gradient(45deg, var(--paper) 5px, transparent 0) 0 0 / 10px 10px
+      repeat-x;
 }
 
 .ticket-paper::before {
@@ -468,7 +474,6 @@ input:focus-visible {
   }
 }
 
-
 #toast {
   opacity: 0;
   position: fixed;
@@ -479,11 +484,22 @@ input:focus-visible {
   color: var(--cream);
   padding: 15px 50px;
   border-radius: var(--radius);
-  transition: opacity .2s ease-in-out, transform .2s ease-in-out;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
   z-index: 999;
 }
 
 #toast.toast-active {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+#ticket-history {
+  padding: 25px 0;
+}
+#ticket-history li {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }

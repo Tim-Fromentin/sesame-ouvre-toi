@@ -3,10 +3,12 @@ import { renderTicket } from "./renderTicket.js";
 import { showToast, parseJson } from "./utils.js";
 const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
+const ticketHistorySaved = localStorage.getItem("sesame-ticket-history");
 const discountSaved = localStorage.getItem("sesame-discount");
 const checkout = document.querySelector("#checkout");
 
 export const order = {
+  ticketHistory: parseJson(ticketHistorySaved) || [],
   lines: parseJson(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
   ticketId: parseFloat(ticketIdSaved) || 1,
@@ -41,12 +43,23 @@ export const order = {
       showToast("Merci de choisir au moins un produit");
       return;
     }
+    let ticketHistoryObject = {
+      ticketId: this.ticketId,
+      lines: this.lines,
+      total: this.getSubtotal() - this.getTotalDiscount(),
+    };
+    this.ticketHistory.push(ticketHistoryObject);
+    localStorage.setItem(
+      "sesame-ticket-history",
+      JSON.stringify(this.ticketHistory),
+    );
     this.ticketId += 1;
     this.lines = [];
     this.customer = "";
     this.discount = 0;
     renderTicket();
     this.save();
+    window.location.reload();
   },
   add: function (product) {
     if (!product) return;
