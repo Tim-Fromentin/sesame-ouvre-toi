@@ -43,15 +43,23 @@ export const order = {
       showToast("Merci de choisir au moins un produit");
       return;
     }
-    let t = {ticketId: this.ticketId, lines: this.lines, total: (this.getSubtotal() - this.getTotalDiscount())};
-    this.ticketHistory.push(t)
-    localStorage.setItem("sesame-ticket-history", JSON.stringify(this.ticketHistory));
+    let ticketHistoryObject = {
+      ticketId: this.ticketId,
+      lines: this.lines,
+      total: this.getSubtotal() - this.getTotalDiscount(),
+    };
+    this.ticketHistory.push(ticketHistoryObject);
+    localStorage.setItem(
+      "sesame-ticket-history",
+      JSON.stringify(this.ticketHistory),
+    );
     this.ticketId += 1;
     this.lines = [];
     this.customer = "";
     this.discount = 0;
     renderTicket();
     this.save();
+    window.location.reload();
   },
   add: function (product) {
     if (!product) return;
