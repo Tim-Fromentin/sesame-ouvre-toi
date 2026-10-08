@@ -7,7 +7,6 @@ const customerError = document.querySelector("#customer-error");
 const customerName = document.querySelector("#customer-name");
 const customerForm = document.querySelector("#customer-form");
 const ticketTitle = document.querySelector("#ticket-title");
-const categoriesNav = document.querySelector("#categories");
 const buttonsCategoriesNav = document.querySelectorAll("#categories > button");
 const promoCode = "BARISTA";
 const promoForm = document.querySelector("#promo-form");
@@ -16,25 +15,29 @@ const promoMessage = document.querySelector("#promo-message");
 
 renderMenu();
 renderTicket();
+const categoriesNav = document.querySelector("#categories");
+
 categoriesNav.addEventListener("click", (e) => {
-  renderMenu(e.target.value);
+  const clickedButton = e.target.closest("button");
+  if (!clickedButton) return;
+
+  renderMenu(clickedButton.value);
   buttonsCategoriesNav.forEach((button) => {
     button.classList.remove("is-active");
   });
-
-  e.target.classList.add("is-active");
+  clickedButton.classList.add("is-active");
 });
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  if (!customerName.value) {
+  order.customer = customerName.value.trim();
+  if (!order.customer) {
     customerError.textContent = "Veuillez rentrer un nom.";
     setTimeout(() => {
       customerError.textContent = "";
     }, 1000);
     return;
   }
-  order.customer = customerName.value.trim();
   ticketTitle.textContent = `Ticket de ${order.customer}`;
 };
 customerForm.addEventListener("submit", handleSubmit);

@@ -20,6 +20,9 @@ export const showToast = (message) => {
 };
 
 export const translate = (object, name) => {
+  if (!name) {
+    return;
+  }
   const wordTranslate = object.find(
     (item) => item.en.toUpperCase() === name.toUpperCase(),
   );
