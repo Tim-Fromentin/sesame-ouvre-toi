@@ -1,24 +1,24 @@
-import { menu } from "../ressources/menu.js";
+import { menu } from "../resources/menu.js";
 import { formatPrice, showErrorMsg, translate } from "./utils.js";
-import { translateCategorie } from "../ressources/translate.js";
+import { translateCategorie } from "../resources/translate.js";
 import { createElements } from "./utils.js";
 
 const menuList = document.querySelector("#menu");
-export const renderMenu = (category = "all", onAdd) => {
-  menuList.textContent = "";
-  if (!Array.isArray(menu)) {
-    console.error("An error has occurred");
 
-    return;
-  }
-  let menuByCategory =
+const getMenuByCategory = (category) => {
+  const menuByCategory =
     category === "all"
       ? menu
       : menu.filter((article) => article.category === category);
+  return menuByCategory;
+};
 
-  menuByCategory.length < 1
-    ? showErrorMsg("Aucun plat n'a été trouvé.", menuList)
-    : "";
+const verifyNotEmptyArray = (menuByCategory) => {
+  if (menuByCategory.length < 1)
+    showErrorMsg("Aucun plat n'a été trouvé.", menuList);
+};
+
+const createMenuElement = (menuByCategory, onAdd) => {
   for (let index = 0; index < menuByCategory.length; index++) {
     const product = menuByCategory[index];
     const isSoldOut = !product.available;
@@ -54,7 +54,7 @@ export const renderMenu = (category = "all", onAdd) => {
         disabled: isSoldOut,
         eventListener: {
           type: "click",
-          callback: () => onAdd(product)
+          callback: () => onAdd(product),
         },
       },
     ];
@@ -75,4 +75,15 @@ export const renderMenu = (category = "all", onAdd) => {
       productAddBtn,
     );
   }
+};
+export const renderMenu = (category = "all", onAdd) => {
+  menuList.textContent = "";
+  if (!Array.isArray(menu)) {
+    console.error("An error has occurred");
+    return;
+  }
+
+  const menuByCategory = getMenuByCategory(category);
+  verifyNotEmptyArray(menuByCategory);
+  createMenuElement(menuByCategory, onAdd);
 };
