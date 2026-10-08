@@ -62,11 +62,7 @@ export const order = {
     window.location.reload();
   },
   add: function (product) {
-    if (!product) return;
-    if (!product.available) {
-      showToast("Produit épuisé");
-      return;
-    }
+    if (!product || !product.available) return false;
     let targetProduct = this.lines.find((item) => item.id === product.id);
     if (targetProduct) {
       targetProduct.quantity += 1;
@@ -80,7 +76,7 @@ export const order = {
       });
     }
     this.save();
-    renderTicket();
+    return true;
   },
   getSubtotal: function () {
     const sum = this.lines.reduce(
@@ -99,7 +95,6 @@ export const order = {
       this.lines.splice(index, 1);
     }
     this.save();
-    renderTicket();
   },
 };
 

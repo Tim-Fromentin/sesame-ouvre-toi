@@ -1,11 +1,10 @@
 import { menu } from "../ressources/menu.js";
 import { formatPrice, showErrorMsg, translate } from "./utils.js";
-import { order } from "./order.js";
 import { translateCategorie } from "../ressources/translate.js";
 import { createElements } from "./utils.js";
 
 const menuList = document.querySelector("#menu");
-export const renderMenu = (category = "all") => {
+export const renderMenu = (category = "all", onAdd) => {
   menuList.textContent = "";
   if (!Array.isArray(menu)) {
     console.error("An error has occurred");
@@ -55,7 +54,7 @@ export const renderMenu = (category = "all") => {
         disabled: isSoldOut,
         eventListener: {
           type: "click",
-          callback: () => order.add(product),
+          callback: () => onAdd(product)
         },
       },
     ];

@@ -8,7 +8,7 @@ const ticketTotal = document.querySelector("#ticket-total");
 const ticketDiscount = document.querySelector("#ticket-discount");
 const ticketId = document.querySelector("#ticket-id");
 
-export const renderTicket = () => {
+export const renderTicket = (onRemove) => {
   ticketId.textContent = order.ticketId;
   ticketLines.textContent = "";
   ticketTotal.textContent = "0,00 €";
@@ -46,7 +46,7 @@ export const renderTicket = () => {
         ariaLabel: `Retirer un ${line.name}`,
         eventListener: {
           type: "click",
-          callback: () => order.remove(line.id),
+          callback: () => onRemove(line.id),
         },
       },
     ];
