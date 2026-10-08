@@ -487,3 +487,12 @@ input:focus-visible {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+#ticket-day {
+  padding: 25px 0;
+}
+#ticket-day li {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
