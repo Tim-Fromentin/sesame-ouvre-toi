@@ -497,6 +497,8 @@ input:focus-visible {
 
 #ticket-history {
   padding: 25px 0;
+  max-height: 100px;
+  overflow-y: scroll;
 }
 #ticket-history li {
   width: 100%;
