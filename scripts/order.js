@@ -1,4 +1,4 @@
-import { formules } from "../ressources/formules.js";
+import { formules } from "../resources/formules.js";
 import { parseJson } from "./utils.js";
 
 const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
