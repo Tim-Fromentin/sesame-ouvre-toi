@@ -80,16 +80,19 @@ customerForm.addEventListener("submit", handleSubmit);
 const applyPromoCode = (e) => {
   e.preventDefault();
   promoMessage.textContent = "";
-  renderTicket(handleRemove);
+  const cleanPromoCode = promoCodeValue.value.trim().toUpperCase();
   if (
-    !promoCodeValue ||
-    promoCodeValue.value.toUpperCase() !== promoCode.toUpperCase()
+    !cleanPromoCode ||
+    cleanPromoCode !== promoCode.toUpperCase()
   ) {
+    order.discount = 0;
     promoMessage.textContent = "Code inconnu";
+    renderTicket(handleRemove);
     return;
   }
   order.discount = 0.1;
   order.save();
+  showToast(`Code promo ${promoCodeValue.value} appliqué`);
   renderTicket(handleRemove);
 };
 promoForm.addEventListener("submit", applyPromoCode);
