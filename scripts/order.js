@@ -5,15 +5,17 @@ const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
 const ticketHistorySaved = localStorage.getItem("sesame-ticket-history");
 const discountSaved = localStorage.getItem("sesame-discount");
+const customerSaved = localStorage.getItem("sesame-customer");
 
 export const order = {
   ticketHistory: parseJson(ticketHistorySaved) || [],
   lines: parseJson(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
   ticketId: parseFloat(ticketIdSaved) || 1,
-  customer: "",
+  customer: parseJson(customerSaved) || "",
   save: function () {
     localStorage.setItem("sesame-discount", JSON.stringify(this.discount));
+    localStorage.setItem("sesame-customer", JSON.stringify(this.customer));
     localStorage.setItem("sesame-order", JSON.stringify(this.lines));
     localStorage.setItem("sesame-ticket-id", JSON.stringify(this.ticketId));
     localStorage.setItem(
