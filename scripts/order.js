@@ -5,15 +5,17 @@ const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
 const ticketHistorySaved = localStorage.getItem("sesame-ticket-history");
 const discountSaved = localStorage.getItem("sesame-discount");
+const customerSaved = localStorage.getItem("sesame-customer");
 
 export const order = {
   ticketHistory: parseJson(ticketHistorySaved) || [],
   lines: parseJson(linesSaved) || [],
   discount: parseFloat(discountSaved) || 0,
   ticketId: parseFloat(ticketIdSaved) || 1,
-  customer: "",
+  customer: parseJson(customerSaved) || "",
   save: function () {
     localStorage.setItem("sesame-discount", JSON.stringify(this.discount));
+    localStorage.setItem("sesame-customer", JSON.stringify(this.customer));
     localStorage.setItem("sesame-order", JSON.stringify(this.lines));
     localStorage.setItem("sesame-ticket-id", JSON.stringify(this.ticketId));
     localStorage.setItem(
@@ -36,10 +38,11 @@ export const order = {
     return discount;
   },
   getTotalDiscount: function () {
-    return (
-      this.calcDiscount() +
-      Math.round((this.getSubtotal() - this.calcDiscount()) * this.discount)
+    const formulaDiscount = this.calcDiscount();
+    const promoDiscount = Math.round(
+      (this.getSubtotal() - formulaDiscount) * this.discount,
     );
+    return formulaDiscount + promoDiscount;
   },
   handleCashIn: function () {
     if (this.lines.length < 1) {
@@ -49,7 +52,7 @@ export const order = {
       customer: this.customer,
       ticketId: this.ticketId,
       lines: this.lines,
-      total: this.getSubtotal() - this.getTotalDiscount(),
+      total: this.getTotal(),
     };
     this.ticketHistory.push(ticketHistoryObject);
     this.ticketId += 1;
@@ -75,6 +78,9 @@ export const order = {
     }
     this.save();
     return true;
+  },
+  getTotal: function () {
+    return this.getSubtotal() - this.getTotalDiscount();
   },
   getSubtotal: function () {
     const sum = this.lines.reduce(

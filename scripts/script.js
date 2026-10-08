@@ -31,8 +31,23 @@ const handleCheckout = () => {
 const handleClear = () => {
   customerName.value = "";
   promoCodeValue.value = "";
-  ticketTitle.textContent = "Ticket";
+  renderTicketTitle();
   promoMessage.textContent = "";
+};
+
+const renderTicketTitle = () => {
+  ticketTitle.textContent = order.customer
+    ? `Ticket de ${order.customer}`
+    : "Ticket";
+};
+
+const restoreForm = () => {
+  customerName.value = order.customer;
+  renderTicketTitle();
+  if (order.discount > 0) {
+    promoCodeValue.value = promoCode;
+    promoMessage.textContent = "Code appliqué : 10 % de remise";
+  }
 };
 
 const handleAdd = (product) => {
@@ -65,33 +80,38 @@ categoriesNav.addEventListener("click", (e) => {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  order.customer = customerName.value.trim();
-  if (!order.customer) {
+  if (!customerName.value.trim()) {
     customerError.textContent = "Veuillez rentrer un nom.";
     setTimeout(() => {
       customerError.textContent = "";
     }, 1000);
     return;
   }
-  ticketTitle.textContent = `Ticket de ${order.customer}`;
+  order.customer = customerName.value.trim();
+  renderTicketTitle();
+  order.save();
 };
 customerForm.addEventListener("submit", handleSubmit);
 
 const applyPromoCode = (e) => {
   e.preventDefault();
-  promoMessage.textContent = "";
-  renderTicket(handleRemove);
-  if (
-    !promoCodeValue ||
-    promoCodeValue.value.toUpperCase() !== promoCode.toUpperCase()
-  ) {
-    promoMessage.textContent = "Code inconnu";
+  if (order.lines.length < 1) {
+    promoMessage.textContent = "Ajoutez un produit avant d'appliquer un code";
     return;
   }
-  order.discount = 0.1;
+
+  const cleanPromoCode = promoCodeValue.value.trim().toUpperCase();
+  if (cleanPromoCode === promoCode) {
+    order.discount = 0.1;
+    promoMessage.textContent = "Code appliqué : 10 % de remise";
+  } else {
+    order.discount = 0;
+    promoMessage.textContent = "Code inconnu";
+  }
   order.save();
-  renderTicket(handleRemove);
+  refreshTicket();
 };
+
 promoForm.addEventListener("submit", applyPromoCode);
 
 btnCheckout.addEventListener("click", handleCheckout);
@@ -99,3 +119,4 @@ btnCheckout.addEventListener("click", handleCheckout);
 renderMenu("all", handleAdd);
 refreshTicket();
 renderTicketHistory();
+restoreForm();

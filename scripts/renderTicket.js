@@ -13,7 +13,6 @@ const ticketId = document.querySelector("#ticket-id");
 const resetTicket = () => {
   ticketId.textContent = order.ticketId;
   ticketLines.textContent = "";
-  ticketTotal.textContent = "0,00 €";
 };
 const showTicketHidden = () => {
   order.lines.length > 0
@@ -71,7 +70,5 @@ export const renderTicket = (onRemove) => {
   showTicketHidden();
   createTicket(onRemove);
   ticketDiscount.textContent = formatPrice(order.getTotalDiscount());
-  ticketTotal.textContent = formatPrice(
-    order.getSubtotal() - order.getTotalDiscount(),
-  );
+  ticketTotal.textContent = formatPrice(order.getTotal());
 };
