@@ -54,7 +54,7 @@ export const renderMenu = (category = "all", onAdd) => {
         disabled: isSoldOut,
         eventListener: {
           type: "click",
-          callback: () => onAdd(product)
+          callback: () => onAdd(product),
         },
       },
     ];

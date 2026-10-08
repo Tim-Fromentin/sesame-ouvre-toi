@@ -1,7 +1,6 @@
 import { formules } from "../ressources/formules.js";
 import { parseJson } from "./utils.js";
 
-
 const ticketIdSaved = localStorage.getItem("sesame-ticket-id");
 const linesSaved = localStorage.getItem("sesame-order");
 const ticketHistorySaved = localStorage.getItem("sesame-ticket-history");
@@ -96,5 +95,3 @@ export const order = {
     this.save();
   },
 };
-
-

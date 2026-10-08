@@ -1,20 +1,27 @@
+// IMPORT
 import { order } from "./order.js";
 import { formatPrice } from "./utils.js";
 import { createElements } from "./utils.js";
-
+// SELECT
 const ticketLines = document.querySelector("#ticket-lines");
 const ticketEmpty = document.querySelector("#ticket-empty");
 const ticketTotal = document.querySelector("#ticket-total");
 const ticketDiscount = document.querySelector("#ticket-discount");
 const ticketId = document.querySelector("#ticket-id");
 
-export const renderTicket = (onRemove) => {
+// UTILITIES METHOD
+const resetTicket = () => {
   ticketId.textContent = order.ticketId;
   ticketLines.textContent = "";
   ticketTotal.textContent = "0,00 €";
+};
+const showTicketHidden = () => {
   order.lines.length > 0
     ? ticketEmpty.classList.add("is-hidden")
     : ticketEmpty.classList.remove("is-hidden");
+};
+
+const createTicket = (onRemove) => {
   for (let index = 0; index < order.lines.length; index++) {
     let line = order.lines[index];
     const elements = [
@@ -56,6 +63,13 @@ export const renderTicket = (onRemove) => {
     ticketLines.appendChild(ticketLine);
     ticketLine.append(lineName, lineQty, linePrice, lineRemove);
   }
+};
+
+// Render Ticket
+export const renderTicket = (onRemove) => {
+  resetTicket();
+  showTicketHidden();
+  createTicket(onRemove);
   ticketDiscount.textContent = formatPrice(order.getTotalDiscount());
   ticketTotal.textContent = formatPrice(
     order.getSubtotal() - order.getTotalDiscount(),
