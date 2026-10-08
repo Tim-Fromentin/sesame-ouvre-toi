@@ -90,11 +90,12 @@ export const order = {
     return sum;
   },
   remove: function (id) {
-    if (!id) return;
-    let targetProduct = this.lines.find((item) => item.id === id);
-    let index = this.lines.findIndex((item) => item.id === id);
-    targetProduct.quantity -= 1;
-    if (index > -1 && targetProduct.quantity < 1) {
+    const index = this.lines.findIndex((item) => item.id === id);
+    if (index === -1) return;
+
+    const line = this.lines[index];
+    line.quantity -= 1;
+    if (line.quantity < 1) {
       this.lines.splice(index, 1);
     }
     this.save();
