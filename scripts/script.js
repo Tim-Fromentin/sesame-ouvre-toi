@@ -2,7 +2,7 @@ import { renderMenu } from "./renderMenu.js";
 import { renderTicket } from "./renderTicket.js";
 import { renderTicketHistory } from "./renderTicketHistory.js";
 import { order } from "./order.js";
-import { showToast } from "./utils.js";
+import { formatPrice, showToast } from "./utils.js";
 
 const customerError = document.querySelector("#customer-error");
 const customerName = document.querySelector("#customer-name");
@@ -14,10 +14,25 @@ const promoForm = document.querySelector("#promo-form");
 const promoCodeValue = document.querySelector("#promo-code");
 const promoMessage = document.querySelector("#promo-message");
 const categoriesNav = document.querySelector("#categories");
+const btnCheckout = document.querySelector("#checkout");
 
+const handleCheckout = () => {
+  const objectCashIn = order.handleCashIn();
+  if (!objectCashIn) {
+    showToast("Choissisez au moins un produit");
+    return;
+  }
+  showToast(`Total ${formatPrice(objectCashIn.total)}`);
+  refreshTicket();
+  renderTicketHistory();
+  handleClear();
+};
 
-const refreshTicket = () => {
-  renderTicket(handleRemove);
+const handleClear = () => {
+  customerName.value = "";
+  promoCodeValue.value = "";
+  ticketTitle.textContent = "Ticket";
+  promoMessage.textContent = "";
 };
 
 const handleAdd = (product) => {
@@ -26,6 +41,10 @@ const handleAdd = (product) => {
     return;
   }
   refreshTicket();
+};
+
+const refreshTicket = () => {
+  renderTicket(handleRemove);
 };
 
 const handleRemove = (id) => {
@@ -75,6 +94,7 @@ const applyPromoCode = (e) => {
 };
 promoForm.addEventListener("submit", applyPromoCode);
 
+btnCheckout.addEventListener("click", handleCheckout);
 
 renderMenu("all", handleAdd);
 refreshTicket();
